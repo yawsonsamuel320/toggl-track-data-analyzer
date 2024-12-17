@@ -49,7 +49,7 @@ class Workspace(Base):
     __tablename__ = 'workspaces'
     id = Column(Integer, primary_key=True)
     name = Column(String(255))
-    organization_id = Column(Integer, ForeignKey('organizations.id'))
+    organization_id = Column(Integer, ForeignKey('organizations.id'))  # Ensure this is in the DB
     organization = relationship('Organization', back_populates='workspaces')
     clients = relationship('Client', back_populates='workspace')
     time_entries = relationship('TimeEntry', back_populates='workspace')
@@ -130,8 +130,8 @@ def insert_toggl_data_into_db(time_entries):
         time_entry = TimeEntry(
             id=entry['id'],
             description=entry.get('description', ''),
-            start_time=datetime.strptime(entry['start'], '%Y-%m-%dT%H:%M:%S.%fZ'),
-            end_time=datetime.strptime(entry['end'], '%Y-%m-%dT%H:%M:%S.%fZ'),
+            start_time=datetime.strptime(entry['start'], '%Y-%m-%dT%H:%M:%S%z'),
+            end_time=datetime.strptime(entry.get('end', '2024-12-17T00:15:47+00:00'), '%Y-%m-%dT%H:%M:%S%z'),
             duration=entry['duration'],
             user_id=entry['user_id'],
             project_id=entry['project_id'],
